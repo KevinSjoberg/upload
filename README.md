@@ -19,3 +19,8 @@ can be edited using `$EDTIOR` with the commands `upload --edit-maps` (`upload
 
     .git
     tmp/cache
+
+Looking for a way to integrate `upload` with your editor? Check out
+[Integrating with your
+editor](https://github.com/KevinSjoberg/upload/wiki/Integrating-with-your-editor)
+in the wiki section.
