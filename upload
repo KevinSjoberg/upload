@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -e
+
+upload_path="$HOME/.upload"
+upload_maps="$upload_path/maps"
+upload_excludes="$upload_path/excludes"
+
+if [[ ! -d "$upload_path" ]]; then
+  mkdir $upload_path
+  touch $upload_maps
+  touch $upload_excludes
+fi
+
+case "$1" in
+  "-h"|"--help")
+cat <<-HELP
+Usage:
+  upload [OPTION]
+
+Options:
+  -em, --edit-maps     - Edit path mappings
+  -ee, --edit-excludes - Edit files to be excludes
+HELP
+    ;;
+  "-em"|"--edit-maps")
+    $EDITOR $upload_maps
+    ;;
+  "-ee"|"--edit-excludes")
+    $EDITOR $upload_excludes
+    ;;
+  *)
+    while read upload_local upload_remote; do
+      if [[ $PWD == $upload_local || $PWD =~ $upload_local/ ]]; then
+        rsync --chmod a+rwx -azv --inplace --delete --exclude-from $upload_excludes $upload_local/ $upload_remote
+        exit 0
+      fi
+    done < $upload_maps
+    echo "upload: no path map exists for $PWD."
+    exit 1
+    ;;
+esac
